@@ -9,13 +9,13 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/dashboard/workplace',
+    redirect: '/system',
     children: [
       // dashboard
       {
-        path: 'dashboard',
+        path: '/system',
         name: 'dashboard',
-        redirect: '/dashboard/workplace',
+        redirect: '/user/system/user',
         component: RouteView,
         meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
         children: [
@@ -32,16 +32,16 @@ export const asyncRouterMap = [
             meta: { title: '监控页（外部）', target: '_blank' }
           },
           {
-            path: 'workplace',
+            path: '/user/system/user',
             name: 'Workplace',
             component: () => import('@/views/dashboard/Workplace'),
-            meta: { title: '工作台', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '用户中心', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
-            path: 'test-work',
+            path: '/user/system/role',
             name: 'TestWork',
             component: () => import('@/views/dashboard/TestWork'),
-            meta: { title: '测试功能', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '权限管理', keepAlive: true, permission: [ 'dashboard' ] }
           }
         ]
       },

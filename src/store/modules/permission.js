@@ -7,19 +7,19 @@ import { asyncRouterMap, constantRouterMap } from '@/config/router.config'
  * @param route
  * @returns {boolean}
  */
-function hasPermission (permission, route) {
-  if (route.meta && route.meta.permission) {
-    let flag = false
-    for (let i = 0, len = permission.length; i < len; i++) {
-      flag = route.meta.permission.includes(permission[i])
-      if (flag) {
-        return true
-      }
-    }
-    return false
-  }
-  return true
-}
+// function hasPermission (permission, route) {
+//   if (route.meta && route.meta.permission) {
+//     let flag = false
+//     for (let i = 0, len = permission.length; i < len; i++) {
+//       flag = route.meta.permission.includes(permission[i])
+//       if (flag) {
+//         return true
+//       }
+//     }
+//     return false
+//   }
+//   return true
+// }
 
 /**
  * 单账户多角色时，使用该方法可过滤角色不存在的菜单
@@ -29,25 +29,36 @@ function hasPermission (permission, route) {
  * @returns {*}
  */
 // eslint-disable-next-line
-function hasRole(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return route.meta.roles.includes(roles.id)
-  } else {
-    return true
-  }
-}
+// function hasRole(roles, route) {
+//   if (route.meta && route.meta.roles) {
+//     return route.meta.roles.includes(roles.id)
+//   } else {
+//     return true
+//   }
+// }
 
-function filterAsyncRouter (routerMap, roles) {
+function filterAsyncRouter (routerMap, routers) {
   const accessedRouters = routerMap.filter(route => {
-    if (hasPermission(roles.permissionList, route)) {
+    if (routers.some(item => item.path === route.path)) {
       if (route.children && route.children.length) {
-        route.children = filterAsyncRouter(route.children, roles)
+        route.children = filterAsyncRouter(route.children, routers)
       }
       return true
     }
     return false
   })
   return accessedRouters
+}
+
+function unfoldRouters (routers, arr) {
+  arr = arr || []
+  for (let i = 0; i < routers.length; i++) {
+    arr.push(routers[i])
+    if (routers[i] && routers[i].children) {
+      unfoldRouters(routers[i].children, arr)
+    }
+  }
+  return arr
 }
 
 const permission = {
@@ -62,11 +73,14 @@ const permission = {
     }
   },
   actions: {
-    GenerateRoutes ({ commit }, data) {
+    GenerateRoutes ({ commit }, routers) {
       return new Promise(resolve => {
-        const { roles } = data
-        const accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
-        commit('SET_ROUTERS', accessedRouters)
+        const accessedRouters = filterAsyncRouter(asyncRouterMap[0].children, unfoldRouters(routers))
+        asyncRouterMap[0].children = accessedRouters
+        console.log(asyncRouterMap)
+        // console.log(asyncRouterMap, accessedRouters, filterAsyncRouter(asyncRouterMap[0].children, unfoldRouters(routers)))
+        commit('SET_ROUTERS', asyncRouterMap)
+        commit('SET_ROLES', [1, 2])
         resolve()
       })
     }

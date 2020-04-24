@@ -74,6 +74,7 @@ const app = {
     TOGGLE_MULTI_TAB: (state, bool) => {
       Vue.ls.set(DEFAULT_MULTI_TAB, bool)
       state.multiTab = bool
+      console.log(state, bool)
     }
   },
   actions: {
