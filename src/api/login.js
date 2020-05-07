@@ -4,17 +4,15 @@ import { axios } from '@/utils/request'
 /**
  * login func
  * parameter: {
- *     username: '',
+ *     name: '',
  *     password: '',
- *     remember_me: true,
- *     captcha: '12345'
  * }
  * @param parameter
  * @returns {*}
  */
 export function login (parameter) {
   return axios({
-    url: '/login',
+    url: api.Login,
     method: 'post',
     data: parameter
   })
@@ -30,22 +28,26 @@ export function getSmsCaptcha (parameter) {
 
 export function getInfo () {
   return axios({
-    url: '/user/getInfo',
-    method: 'get',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
-  })
-}
-
-export function getCurrentUserNav (token) {
-  return axios({
-    url: '/user/getInfo',
+    url: api.Info,
     method: 'get'
   })
 }
 
-export function getNavAndInfo () {
+export function getPermissionList () {
+  return axios({
+    url: api.PermissionList,
+    method: 'get'
+  })
+}
+
+export function getRouters () {
+  return axios({
+    url: api.Routers,
+    method: 'get'
+  })
+}
+
+export function getCurrentUserNav () {
   return axios({
     url: '/user/getInfo',
     method: 'get'
@@ -54,11 +56,8 @@ export function getNavAndInfo () {
 
 export function logout () {
   return axios({
-    url: '/auth/logout',
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json;charset=UTF-8'
-    }
+    url: api.Logout,
+    method: 'post'
   })
 }
 

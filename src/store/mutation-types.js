@@ -1,4 +1,6 @@
 export const ACCESS_TOKEN = 'Access-Token'
+export const REFRESH_TOKEN = 'Refresh-Token'
+export const TOKEN_TYPE = 'Token_Type'
 export const SIDEBAR_TYPE = 'SIDEBAR_TYPE'
 export const DEFAULT_THEME = 'DEFAULT_THEME'
 export const DEFAULT_LAYOUT_MODE = 'DEFAULT_LAYOUT_MODE'

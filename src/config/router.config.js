@@ -9,39 +9,37 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/system',
+    redirect: '/admin',
     children: [
       // dashboard
       {
-        path: '/system',
+        path: '/admin',
+        id: '部门',
         name: 'dashboard',
-        redirect: '/user/system/user',
+        redirect: '/admin/shop',
         component: RouteView,
-        meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
+        meta: { title: '部门', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] },
         children: [
-          // {
-          //   path: 'analysis/:pageNo([1-9]\\d*)?',
-          //   name: 'Analysis',
-          //   component: () => import('@/views/dashboard/Analysis'),
-          //   meta: { title: '分析页', keepAlive: false, permission: [ 'dashboard' ] }
-          // },
-          // // 外部链接
-          // {
-          //   path: 'https://www.baidu.com/',
-          //   name: 'Monitor',
-          //   meta: { title: '监控页（外部）', target: '_blank' }
-          // },
           {
-            path: '/user/system/user',
-            name: 'Workplace',
+            id: 'admin.commonshopmembers.list',
+            path: '/admin/shopmenbers',
+            name: 'Shopmenbers',
             component: () => import('@/views/dashboard/Workplace'),
-            meta: { title: '用户中心', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '员工账号', keepAlive: true, permission: [ 'dashboard' ] }
           },
           {
-            path: '/user/system/role',
-            name: 'TestWork',
+            id: 'admin.commonmrshop.list',
+            path: '/admin/shop',
+            name: 'Shop',
             component: () => import('@/views/dashboard/TestWork'),
-            meta: { title: '权限管理', keepAlive: true, permission: [ 'dashboard' ] }
+            meta: { title: '部门', keepAlive: true, permission: [ 'dashboard' ] }
+          },
+          {
+            id: 'admin.commonrolepermission.list',
+            path: '/admin/permission',
+            name: 'Permission',
+            component: () => import('@/views/dashboard/Analysis'),
+            meta: { title: '角色权限设置', keepAlive: true, permission: [ 'dashboard' ] }
           }
         ]
       },

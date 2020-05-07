@@ -3,7 +3,7 @@ import axios from 'axios'
 import store from '@/store'
 import notification from 'ant-design-vue/es/notification'
 import { VueAxios } from './axios'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
+import { ACCESS_TOKEN, REFRESH_TOKEN, TOKEN_TYPE } from '@/store/mutation-types'
 
 // 创建 axios 实例
 const service = axios.create({
@@ -38,12 +38,39 @@ const err = (error) => {
   return Promise.reject(error)
 }
 
+// 不需要携带token的路径
+const notTakeTokenPath = [
+  '/admin/login',
+  '/admin/refresh',
+  '/admin/logout'
+]
+
 // request interceptor
-service.interceptors.request.use(config => {
-  const token = Vue.ls.get(ACCESS_TOKEN)
-  if (token) {
-    config.headers['X-Access-Token'] = token // 让每个请求携带自定义 token 请根据实际情况自行修改
+service.interceptors.request.use(async config => {
+  // 遇到不需要携带token的接口，则直接返回config
+  if (notTakeTokenPath.indexOf(config.url) > -1) {
+    return config
   }
+  let token = Vue.ls.get(ACCESS_TOKEN)
+  let tokenType = Vue.ls.get(TOKEN_TYPE)
+  const refreshToken = Vue.ls.get(REFRESH_TOKEN)
+
+  // 如果token过期或者丢失，则刷新token
+  if (!token || !tokenType) {
+    const refreshRes = await service({
+      url: '/admin/refresh',
+      method: 'post',
+      data: {
+        refresh_token: refreshToken
+      }
+    })
+    Vue.ls.set(ACCESS_TOKEN, refreshRes.data.access_token, refreshRes.data.expires_in)
+    Vue.ls.set(REFRESH_TOKEN, refreshRes.data.refresh_token)
+    Vue.ls.set(TOKEN_TYPE, refreshRes.data.token_type)
+    token = refreshRes.data.access_token
+    tokenType = refreshRes.data.token_type
+  }
+  config.headers['Authorization'] = `${tokenType} ${token}`
   return config
 }, err)
 

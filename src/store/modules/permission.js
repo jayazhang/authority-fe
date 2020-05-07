@@ -39,7 +39,7 @@ import { asyncRouterMap, constantRouterMap } from '@/config/router.config'
 
 function filterAsyncRouter (routerMap, routers) {
   const accessedRouters = routerMap.filter(route => {
-    if (routers.some(item => item.path === route.path)) {
+    if (routers.some(item => item.name === route.id)) {
       if (route.children && route.children.length) {
         route.children = filterAsyncRouter(route.children, routers)
       }
@@ -77,10 +77,7 @@ const permission = {
       return new Promise(resolve => {
         const accessedRouters = filterAsyncRouter(asyncRouterMap[0].children, unfoldRouters(routers))
         asyncRouterMap[0].children = accessedRouters
-        console.log(asyncRouterMap)
-        // console.log(asyncRouterMap, accessedRouters, filterAsyncRouter(asyncRouterMap[0].children, unfoldRouters(routers)))
         commit('SET_ROUTERS', asyncRouterMap)
-        commit('SET_ROLES', [1, 2])
         resolve()
       })
     }

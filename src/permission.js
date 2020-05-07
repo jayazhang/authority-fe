@@ -22,16 +22,17 @@ router.beforeEach((to, from, next) => {
       next({ path: defaultRoutePath })
       NProgress.done()
     } else {
-      if (store.getters.roles.length === 0) {
+      if (store.getters.addRouters.length === 0) {
+        store.dispatch('GetInfo')
+        store.dispatch('GetPermissionList')
         store
-          .dispatch('getNavAndInfo')
+          .dispatch('GetRouters')
           .then(res => {
             // const roles = res.result && res.result.role
-            store.dispatch('GenerateRoutes', res.routers).then(() => {
+            store.dispatch('GenerateRoutes', res).then(() => {
               // 根据roles权限生成可访问的路由表
               // 动态添加可访问路由表
               router.addRoutes(store.getters.addRouters)
-              window.router = router
               // 请求带有 redirect 重定向时，登录自动重定向到该地址
               const redirect = decodeURIComponent(from.query.redirect || to.path)
               if (to.path === redirect) {
