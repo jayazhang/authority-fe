@@ -48,6 +48,7 @@ const notTakeTokenPath = [
 // request interceptor
 service.interceptors.request.use(async config => {
   // 遇到不需要携带token的接口，则直接返回config
+  console.log(notTakeTokenPath.indexOf(config.url), config)
   if (notTakeTokenPath.indexOf(config.url) > -1) {
     return config
   }
